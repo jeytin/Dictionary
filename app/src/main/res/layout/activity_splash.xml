@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_color_white"
+    tools:context=".SplashActivity">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toBottomOf="@id/layout_root"
+        app:layout_constraintLeft_toLeftOf="@+id/layout_root"
+        app:layout_constraintRight_toRightOf="@+id/layout_root">
+
+        <ImageView
+            android:id="@+id/imageview_icon"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/textview_app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/imageview_icon"
+            android:text="口袋词典"
+            android:textColor="@color/app_color_black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/textview_app_slogan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/textview_app_name"
+            android:layout_below="@id/textview_app_name"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:text="查你想要的"
+            android:textColor="@color/app_color_dark_gray"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>
