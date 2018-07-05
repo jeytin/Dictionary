@@ -1,5 +1,6 @@
 package com.lofts.dictionary.ui;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -26,6 +27,7 @@ import com.lofts.dictionary.utils.FastJsonUtil;
 import com.lofts.dictionary.utils.RequestManager;
 import com.lofts.dictionary.widget.CustomListView;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -53,6 +55,7 @@ public class ResultActivity extends AppCompatActivity {
     private DefineAdapter mAdapterDefine;
     private String inputWord;
     private Result mResult;
+    private MediaPlayer mMediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,8 @@ public class ResultActivity extends AppCompatActivity {
 
         mAdapter = new SampleAdapter(this);
         mLvSample.setAdapter(mAdapter);
+
+        mMediaPlayer = new MediaPlayer();
     }
 
     private void setData() {
@@ -94,6 +99,18 @@ public class ResultActivity extends AppCompatActivity {
             holder.mLlAmerica.setVisibility(View.VISIBLE);
             holder.mTvEnglishSymbol.setText("英[" + mResult.getPronunciation().getBrE() + "]");
             holder.mTvAmericaSymbol.setText("美[" + mResult.getPronunciation().getAmE() + "]");
+            holder.mIvEnglishSpeak.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    playMedia(mResult.getPronunciation().getBrEmp3());
+                }
+            });
+            holder.mIvAmericaSpeak.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    playMedia(mResult.getPronunciation().getAmEmp3());
+                }
+            });
         } else {
             holder.mLlEnglish.setVisibility(View.GONE);
             holder.mLlAmerica.setVisibility(View.GONE);
@@ -107,7 +124,15 @@ public class ResultActivity extends AppCompatActivity {
         }
 
         if (mResult.getSams() != null && mResult.getSams().size() > 0) {
+            mAdapter.setWordLight(mEtInput.getText().toString());
             mAdapter.resetList(mResult.getSams());
+
+            mAdapter.setPlaySampleListener(new SampleAdapter.OnPlaySampleListener() {
+                @Override
+                public void playSample(String url) {
+                    playMedia(url);
+                }
+            });
         }
     }
 
@@ -137,6 +162,25 @@ public class ResultActivity extends AppCompatActivity {
         });
     }
 
+    private void playMedia(String url) {
+        if (!TextUtils.isEmpty(url) && !mMediaPlayer.isPlaying()) {
+            try {
+                mMediaPlayer.reset();
+                mMediaPlayer.setDataSource(url);
+                mMediaPlayer.prepareAsync();
+                mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mediaPlayer) {
+                        mediaPlayer.start();
+                    }
+                });
+            } catch (IOException e) {
+                Toast.makeText(ResultActivity.this, "播放失败", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+
     @OnEditorAction(R.id.edittext_search_word)
     public boolean setOnEditerAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
@@ -151,29 +195,12 @@ public class ResultActivity extends AppCompatActivity {
         finish();
     }
 
-    private void setHegiht(ListView listView) {
-        /*获取adapter*/
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            return;
-        }
-        int totalHeight = 0;
-        /* listAdapter.getCount()返回数据项的数目*/
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(0, 0); // 计算子项View 的宽高
-            totalHeight += listItem.getMeasuredHeight(); // 统计所有子项的总高度
-        }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
-        /*
-         * listView.getDividerHeight()获取子项间分隔符占用的高度
-         * params.height最后得到整个ListView完整显示需要的高度
-         * */
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
+        mMediaPlayer.stop();
     }
-
 
     class HeaderViewHolder {
 

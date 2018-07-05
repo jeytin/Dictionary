@@ -30,4 +30,6 @@
     <!-- 加载框透明背景色 -->
     <color name="app_loading_dialog_bg">#5c0a0a0a</color>
 
+    <color name="word_light_bg">#900000ff</color>
+
 </resources>
