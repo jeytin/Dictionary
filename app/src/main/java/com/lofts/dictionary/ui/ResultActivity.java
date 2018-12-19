@@ -124,7 +124,6 @@ public class ResultActivity extends AppCompatActivity {
         }
 
         if (mResult.getSams() != null && mResult.getSams().size() > 0) {
-            mAdapter.setWordLight(mEtInput.getText().toString());
             mAdapter.resetList(mResult.getSams());
 
             mAdapter.setPlaySampleListener(new SampleAdapter.OnPlaySampleListener() {

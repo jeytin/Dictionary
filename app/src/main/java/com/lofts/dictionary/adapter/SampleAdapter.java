@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lofts.dictionary.R;
@@ -17,6 +18,11 @@ public class SampleAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<Sample> mListSample;
+    private OnPlaySampleListener mListener;
+
+    public void setPlaySampleListener(OnPlaySampleListener listener) {
+        mListener = listener;
+    }
 
     public SampleAdapter(Context context) {
         mContext = context;
@@ -50,11 +56,23 @@ public class SampleAdapter extends BaseAdapter {
 
         TextView english = convertView.findViewById(R.id.textview_english);
         TextView chinese = convertView.findViewById(R.id.textview_chinese);
+        ImageView speak = convertView.findViewById(R.id.imageview_speak);
 
         Sample sample = mListSample.get(position);
         english.setText(sample.getEng());
         chinese.setText(sample.getChn());
+        speak.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.playSample(sample.getMp3Url());
+            }
+        });
 
         return convertView;
+    }
+
+
+    public interface OnPlaySampleListener {
+        void playSample(String url);
     }
 }
