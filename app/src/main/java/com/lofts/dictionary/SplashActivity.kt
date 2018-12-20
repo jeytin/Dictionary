@@ -26,6 +26,7 @@ class SplashActivity : AppCompatActivity() {
     private fun gotoIndexPage() {
         Handler().postDelayed({
             startActivity<InputActivity>()
+            finish()
         }, delayTime)
     }
 
